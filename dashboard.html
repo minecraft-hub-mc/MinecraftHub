@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Minecraft Hub</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar">
+            <div class="admin-logo">Minecraft Hub</div>
+            <ul class="admin-menu">
+                <li><a href="#" class="menu-link active" data-section="dashboard">Dashboard</a></li>
+                <li><a href="#" class="menu-link" data-section="posts">Manage Posts</a></li>
+                <li><a href="#" class="menu-link" data-section="categories">Categories</a></li>
+                <li><a href="#" class="menu-link" onclick="logout()">Logout</a></li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="admin-main">
+            <!-- Dashboard Section -->
+            <section id="dashboard-section" class="admin-section">
+                <div class="admin-header">
+                    <h1 class="admin-title">Dashboard</h1>
+                </div>
+                <div class="stats-grid" id="statsGrid">
+                    <!-- Stats loaded dynamically -->
+                </div>
+                <h2 style="color: var(--accent-orange); margin-top: 40px; margin-bottom: 20px;">Recent Posts</h2>
+                <table class="admin-table" id="recentPostsTable">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Category</th>
+                            <th>Version</th>
+                            <th>Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Loaded dynamically -->
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Posts Section -->
+            <section id="posts-section" class="admin-section" style="display: none;">
+                <div class="admin-header">
+                    <h1 class="admin-title">Manage Posts</h1>
+                    <button class="admin-btn" onclick="openAddPostModal()">Add New Post</button>
+                </div>
+                <table class="admin-table" id="postsTable">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Category</th>
+                            <th>Version</th>
+                            <th>Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="postsTableBody">
+                        <!-- Loaded dynamically -->
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Categories Section -->
+            <section id="categories-section" class="admin-section" style="display: none;">
+                <div class="admin-header">
+                    <h1 class="admin-title">Manage Categories</h1>
+                    <button class="admin-btn" onclick="openAddCategoryModal()">Add Category</button>
+                </div>
+                <table class="admin-table" id="categoriesTable">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Created</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="categoriesTableBody">
+                        <!-- Loaded dynamically -->
+                    </tbody>
+                </table>
+            </section>
+        </main>
+    </div>
+
+    <!-- Add/Edit Post Modal -->
+    <div id="postModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="postModalTitle">Add New Post</h2>
+                <button class="close-btn" onclick="closePostModal()">&times;</button>
+            </div>
+            <form id="postForm">
+                <div class="form-group">
+                    <label class="form-label">Title</label>
+                    <input type="text" id="postTitle" class="form-input" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <textarea id="postDescription" class="form-textarea" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Full Description (HTML supported)</label>
+                    <textarea id="postFullDescription" class="form-textarea"></textarea>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Category</label>
+                        <select id="postCategory" class="form-select" required></select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Minecraft Version</label>
+                        <select id="postVersion" class="form-select" required>
+                            <option value="1.20">1.20</option>
+                            <option value="1.19">1.19</option>
+                            <option value="1.18">1.18</option>
+                            <option value="1.17">1.17</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Feature Image</label>
+                    <input type="file" id="postImage" class="form-input" accept="image/*">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Screenshots (one URL per line)</label>
+                    <textarea id="postScreenshots" class="form-textarea" placeholder="https://example.com/screenshot1.jpg&#10;https://example.com/screenshot2.jpg"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Download Links (name|url, one per line)</label>
+                    <textarea id="postDownloadLinks" class="form-textarea" placeholder="Download 1|https://example.com/download1&#10;Download 2|https://example.com/download2"></textarea>
+                </div>
+
+                <div style="display: flex; gap: 10px;">
+                    <button type="submit" class="admin-btn">Save Post</button>
+                    <button type="button" class="admin-btn" style="background-color: var(--text-secondary);" onclick="closePostModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add/Edit Category Modal -->
+    <div id="categoryModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Add Category</h2>
+                <button class="close-btn" onclick="closeCategoryModal()">&times;</button>
+            </div>
+            <form id="categoryForm">
+                <div class="form-group">
+                    <label class="form-label">Category Name</label>
+                    <input type="text" id="categoryName" class="form-input" required>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <button type="submit" class="admin-btn">Save Category</button>
+                    <button type="button" class="admin-btn" style="background-color: var(--text-secondary);" onclick="closeCategoryModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Firebase Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-storage.js"></script>
+
+    <!-- Admin Scripts -->
+    <script src="../js/firebase-config.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/admin-dashboard.js"></script>
+</body>
+</html>
